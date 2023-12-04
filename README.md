@@ -130,3 +130,107 @@ Here’s a simple example to add a custom image field to a post:
 
 By using ACF, you can drastically reduce the reliance on custom code and provide a more user-friendly content management system, tailoring your WordPress site to fit your specific content needs and streamlining the content creation process.
 </details>
+
+<details>
+<summary>Tip 23: Enhance User Experience with AJAX in WordPress (Including Vanilla JS Example)</summary>
+Elevate the interactivity and responsiveness of your WordPress site by incorporating AJAX (Asynchronous JavaScript and XML). AJAX allows web pages to update content dynamically without requiring a page reload, enhancing the user experience. This is particularly useful for features like search forms, content filters, and submitting comments.
+
+Here's a basic example of how you can use AJAX in WordPress for a custom search form, first with jQuery and then with vanilla JavaScript:
+
+### Using jQuery:
+
+1. **Enqueue JavaScript File** (jQuery): In your theme’s `functions.php`:
+
+   ```php
+   function enqueue_ajax_search_jquery() {
+       wp_enqueue_script('ajax-search-jquery', get_template_directory_uri() . '/js/ajax-search-jquery.js', array('jquery'), null, true);
+       wp_localize_script('ajax-search-jquery', 'wp_ajax',
+           array('ajax_url' => admin_url('admin-ajax.php'))
+       );
+   }
+   add_action('wp_enqueue_scripts', 'enqueue_ajax_search_jquery');
+   ```
+
+2. **JavaScript for AJAX Request** (jQuery): In your `ajax-search-jquery.js`:
+
+   ```javascript
+   jQuery(document).ready(function($) {
+       $('#search-form').submit(function(event) {
+           event.preventDefault();
+           var searchQuery = $('#search-input').val();
+
+           $.ajax({
+               url: wp_ajax.ajax_url,
+               type: 'post',
+               data: {
+                   action: 'ajax_search',
+                   query: searchQuery
+               },
+               success: function(result) {
+                   $('#search-results').html(result);
+               }
+           });
+       });
+   });
+   ```
+
+### Using Vanilla JavaScript:
+
+1. **Enqueue JavaScript File** (Vanilla JS): Modify your `functions.php` to enqueue a vanilla JavaScript file:
+
+   ```php
+   function enqueue_ajax_search_vanilla() {
+       wp_enqueue_script('ajax-search-vanilla', get_template_directory_uri() . '/js/ajax-search-vanilla.js', null, null, true);
+       wp_localize_script('ajax-search-vanilla', 'wp_ajax',
+           array('ajax_url' => admin_url('admin-ajax.php'))
+       );
+   }
+   add_action('wp_enqueue_scripts', 'enqueue_ajax_search_vanilla');
+   ```
+
+2. **JavaScript for AJAX Request** (Vanilla JS): In your `ajax-search-vanilla.js`:
+
+   ```javascript
+   document.addEventListener('DOMContentLoaded', function() {
+       var form = document.getElementById('search-form');
+       form.addEventListener('submit', function(event) {
+           event.preventDefault();
+           var searchQuery = document.getElementById('search-input').value;
+
+           var xhr = new XMLHttpRequest();
+           xhr.open('POST', wp_ajax.ajax_url, true);
+           xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+           xhr.onload = function() {
+               if (xhr.status === 200) {
+                   document.getElementById('search-results').innerHTML = xhr.responseText;
+               }
+           };
+           xhr.send('action=ajax_search&query=' + encodeURIComponent(searchQuery));
+       });
+   });
+   ```
+
+3. **Handle AJAX Request in PHP**: (Same for both jQuery and Vanilla JS): In your theme’s `functions.php`, add the function to handle the AJAX request:
+
+   ```php
+   function ajax_search() {
+       $query = esc_attr($_POST['query']);
+       $search_query = new WP_Query(array('s' => $query));
+
+       if($search_query->have_posts()) {
+           while($search_query->have_posts()) {
+               $search_query->the_post();
+               echo '<div>' . get_the_title() . '</div>';
+           }
+       } else {
+           echo 'No results found';
+       }
+       wp_die();
+   }
+   add_action('wp_ajax_nopriv_ajax_search', 'ajax_search');
+   add_action('wp_ajax_ajax_search', 'ajax_search');
+   ```
+
+This setup allows users to enjoy a smoother, more dynamic search experience on your WordPress site, using either jQuery or vanilla JavaScript. AJAX is a versatile tool for creating modern, user-friendly interfaces.
+
+</details>
