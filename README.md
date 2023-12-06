@@ -236,7 +236,7 @@ This setup allows users to enjoy a smoother, more dynamic search experience on y
 </details>
 
 <details>
-<summary>Tip 26: Implement Advanced Custom Rest API Endpoints for Dynamic Content</summary>
+<summary>Tip 24: Implement Advanced Custom Rest API Endpoints for Dynamic Content</summary>
 Elevate your WordPress site's functionality by creating custom REST API endpoints. This advanced technique allows you to expose custom data in your WordPress database to external applications, or fetch it dynamically for use in your themes and plugins, enabling more interactive and dynamic web experiences.
 
 1. **Register a Custom Endpoint**: Use the `register_rest_route` function to create a custom REST API endpoint. You can add this to your theme’s `functions.php` file or a custom plugin.
@@ -278,4 +278,30 @@ Elevate your WordPress site's functionality by creating custom REST API endpoint
 3. **Secure Your Endpoint**: Ensure that your custom endpoint is secure. Consider adding authentication and proper permissions checking to prevent unauthorized access.
 
 Creating custom REST API endpoints can significantly enhance your site's interactivity, allowing you to build modern web applications with WordPress as the backend. This approach is particularly beneficial for headless WordPress setups where WordPress serves as a content API.
+</details>
+
+<details>
+<summary>Tip 25: Utilize WebP Images for Optimal Performance</summary>
+Enhance your WordPress site's performance and user experience by using WebP images. WebP is a modern image format that provides superior lossless and lossy compression for images on the web. Using WebP images can significantly reduce the file size of your images, leading to faster page load times and improved SEO.
+
+1. **Convert Images to WebP Format**: Use tools like Adobe Photoshop, online converters, or WordPress plugins that automatically convert uploaded images to WebP format. Plugins like Imagify, ShortPixel, or EWWW Image Optimizer can handle this conversion process efficiently.
+
+2. **Serving WebP Images**: Ensure that your server is configured to serve WebP images. Some hosting providers offer this feature by default. Alternatively, you can use a plugin that serves WebP images to browsers that support the format while providing fallbacks to JPEG or PNG for browsers that don’t.
+
+3. **Update Your .htaccess File (Optional)**: For advanced users, modify your .htaccess file to include rules that serve WebP images when available. This method requires careful implementation to ensure compatibility across different browsers.
+
+   Example .htaccess rule:
+   ```apache
+   <IfModule mod_rewrite.c>
+       RewriteEngine On
+       RewriteCond %{HTTP_ACCEPT} image/webp
+       RewriteCond %{REQUEST_FILENAME} (.+)\.(jpe?g|png)$
+       RewriteCond %{REQUEST_FILENAME}.webp -f
+       RewriteRule ^(.+)$ $1.webp [T=image/webp,E=accept:1]
+   </IfModule>
+   ```
+
+4. **Testing**: After implementing WebP images, test your website across various browsers and devices to ensure images are loading correctly and the site’s performance has improved.
+
+By adopting WebP images, you not only improve your site’s loading speed but also offer a better overall experience to your users, which is a key factor in today's fast-paced digital environment.
 </details>
